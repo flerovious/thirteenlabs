@@ -86,7 +86,8 @@ if youtube_link:
             formatted_timestamp = timestamp if timestamp > 0 else "start"
             st.form_submit_button(f"Jump to {formatted_timestamp}", on_click=play_video(youtube_link, timestamp))
 
-        # with st.expander("**Condensation**"):
+        with st.expander("**Condensation**"):
+            st.write(transcript)
 
 
 else:

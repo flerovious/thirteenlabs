@@ -1,6 +1,7 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 import whisper
 import time
+import streamlit as st
 
 model = whisper.load_model("base")
 output_file = "sample"
@@ -19,6 +20,7 @@ def get_video_id(youtube_link: str):
     return video_id
 
 
+@st.cache_resource
 def get_transcript(video_id: str):
     """
     Return the transcript of a YouTube video
