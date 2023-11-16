@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "35ba54a318d49eb05ab5c26dfccc0b7a96e60d9296ed3e3daa2fd3ce07aec1d3"
+            "sha256": "ab6fb807c508e560a4b4adb84c868b4fa131cd904cf038f527f6cf997143dd66"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -683,6 +683,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.8' and python_full_version != '3.9.7'",
             "version": "==1.28.2"
+        },
+        "streamlit-player": {
+            "hashes": [
+                "sha256:69d635630293f0538983abbfb561feb31d3a11f1442ccf1d92c42303adfa8ff6",
+                "sha256:7f27688fbdf6e385fd277cca00196e51a6e5cda7fc7c1a08098b0108508f5d0e"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==0.1.5"
         },
         "tenacity": {
             "hashes": [

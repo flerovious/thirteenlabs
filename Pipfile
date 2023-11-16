@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 streamlit = "*"
 youtube-transcript-api = "*"
+streamlit-player = "*"
 
 [dev-packages]
 ipykernel = "*"
