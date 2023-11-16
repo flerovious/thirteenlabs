@@ -2,7 +2,9 @@ import streamlit as st
 from transcribe import get_video_id, get_transcript
 from logo import render_logo
 import math
+from db import process_youtube_url, handle_search_query
 
+# Set the page configuration
 st.set_page_config(layout="wide")
 
 # Render the logo
@@ -20,7 +22,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Semantic Search Section
-youtube_link = st.text_input("Enter your youtube video link here")
+youtube_link = st.text_input("Enter your YouTube video link here")
 
 if youtube_link:
     # Display the video
@@ -31,6 +33,17 @@ if youtube_link:
 
     # Get the transcript
     transcript = get_transcript(video_id)
+
+    # Process the YouTube URL
+    query_engine = process_youtube_url(youtube_link)
+
+    # Input for search query
+    search_query = st.text_input("Enter your search query")
+
+    if search_query:
+        # Handle the search query
+        response = handle_search_query(query_engine, search_query)
+        st.write(response)
 
     # Container to hold the transcript buttons
     transcript_container = st.container()
