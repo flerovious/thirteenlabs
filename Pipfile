@@ -11,6 +11,8 @@ openai-whisper = "*"
 pytube = "*"
 llama-index = "*"
 llama-hub = "*"
+python-dotenv = "*"
+openai = "*"
 
 [dev-packages]
 ipykernel = "*"

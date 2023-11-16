@@ -1,12 +1,16 @@
-# youtube_processing.py
-
 from llama_index.readers import YoutubeTranscriptReader
 from llama_index import VectorStoreIndex
 from llama_index.query_engine import CitationQueryEngine
 from llama_index.response.schema import RESPONSE_TYPE
+import streamlit as st
+from dotenv import load_dotenv
+import openai
+
+load_dotenv()
 
 
 # Function to process YouTube URL
+@st.cache_resource
 def process_youtube_url(youtube_url: str):
     reader = YoutubeTranscriptReader(
         collection_name="youtube_collection",
@@ -41,7 +45,11 @@ def get_answer(response: RESPONSE_TYPE):
 def get_top_citations(response: RESPONSE_TYPE):
     citations = []
     for source_node in response.source_nodes:
-        video_id = source_node.node.get_metadata_str().split()[-1]
+        video_id = source_node.node.get_metadata_str().split()
+
+        if not video_id:
+            continue
+
         text = response.source_nodes[0].node.get_text().replace("\n", " ")
 
         citations.append(
