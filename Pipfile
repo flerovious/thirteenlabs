@@ -8,6 +8,7 @@ streamlit = "*"
 youtube-transcript-api = "*"
 streamlit-player = "*"
 openai-whisper = "*"
+pytube = "*"
 
 [dev-packages]
 ipykernel = "*"

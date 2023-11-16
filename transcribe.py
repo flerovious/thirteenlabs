@@ -43,7 +43,6 @@ def convert_audio_to_txt(audio_file: str):
         result = model.transcribe(audio_file)
         transcript = result['text']
 
-        with open(output_file+"_"+int(time.time())+".txt", 'w') as f:
-            f.write(transcript)
+        return transcript
     except Exception as e:
         return "You stoopid"

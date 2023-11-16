@@ -1,8 +1,11 @@
+import os
 import streamlit as st
-from transcribe import get_video_id, get_transcript
+from transcribe import convert_audio_to_txt, get_video_id, get_transcript
 from logo import render_logo
 import math
 from db import process_youtube_url, handle_search_query
+from pytube import YouTube
+import tempfile
 
 # Set the page configuration
 st.set_page_config(layout="wide")
@@ -33,6 +36,14 @@ if youtube_link:
 
     # Get the transcript
     transcript = get_transcript(video_id)
+
+    # If transcript is not available
+    if "An error occurred" in transcript:
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        vid = YouTube(youtube_link).streams.filter(only_audio=True).first()
+        audio_file = vid.download(output_path=temp_file.name)
+        transcript = convert_audio_to_txt(audio_file)
+        os.remove(audio_file)
 
     # Process the YouTube URL
     query_engine = process_youtube_url(youtube_link)
