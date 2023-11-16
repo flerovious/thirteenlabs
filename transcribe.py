@@ -1,5 +1,9 @@
 from youtube_transcript_api import YouTubeTranscriptApi
+import whisper
+import time
 
+model = whisper.load_model("base")
+output_file = "sample"
 
 def get_video_id(youtube_link: str):
     """
@@ -32,3 +36,14 @@ def get_transcript(video_id: str):
         return transcript
     except Exception as e:
         return f"An error occurred: {e}"
+
+
+def convert_audio_to_txt(audio_file: str):
+    try:
+        result = model.transcribe(audio_file)
+        transcript = result['text']
+
+        with open(output_file+"_"+int(time.time())+".txt", 'w') as f:
+            f.write(transcript)
+    except Exception as e:
+        return "You stoopid"
