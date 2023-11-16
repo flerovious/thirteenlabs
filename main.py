@@ -36,10 +36,22 @@ timestamp = 0
 
 col1, col2 = st.columns([6, 4])
 
+with col1:
+    st.session_state.search_query = ""
+    video_player = st.empty()
+
+
+def clear_search_query():
+    st.session_state.search_query = ""
+
+
+def play_video(link, timestamp):
+    clear_search_query()
+    video_player.video(link, format="video/mp4", start_time=timestamp)
+
+
 if youtube_link:
-    with col1:
-        video_player = st.empty()
-        video_player.video(youtube_link, format="video/mp4", start_time=timestamp)
+    play_video(youtube_link, timestamp)
 
     video_id = get_video_id(youtube_link)
 
@@ -50,13 +62,14 @@ if youtube_link:
     query_engine = process_youtube_url(youtube_link)
 
     with col2:
-        with st.expander("**Vector Augmented Search**"):
+        with st.form("**Vector Augmented Search**"):
             # Input for search query
-            search_query = st.text_input("Enter your search query")
+            st.session_state.search_query = st.text_input("Enter your search query")
 
-            if search_query:
+            if st.session_state.search_query:
                 # Handle the search query
-                response = handle_search_query(query_engine, search_query)
+                with st.spinner("Condensing..."):
+                    response = handle_search_query(query_engine, st.session_state.search_query)
 
                 answer = get_answer(response)
                 st.markdown(f"**Answer:** \n {answer}")
@@ -66,11 +79,15 @@ if youtube_link:
                 if citations:
                     top_citations = citations[0]
                     st.write(top_citations["text"])
-                    timestamp = find_timestamp(top_citations["text"], transcript)
 
-                    if st.button(f"Jump to {timestamp}"):
-                        # Update the video player to start at the selected timestamp
-                        timestamp = math.floor(timestamp)
+                    with st.spinner("Finding reference timestamp..."):
+                        timestamp = math.floor(find_timestamp(top_citations["text"], transcript))
+
+            formatted_timestamp = timestamp if timestamp > 0 else "start"
+            st.form_submit_button(f"Jump to {formatted_timestamp}", on_click=play_video(youtube_link, timestamp))
+
+        # with st.expander("**Condensation**"):
+
 
 else:
     # Prompt user to enter a YouTube link
