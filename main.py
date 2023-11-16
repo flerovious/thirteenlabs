@@ -32,7 +32,9 @@ st.markdown(
 
 # Semantic Search Section
 youtube_link = st.text_input("Enter your YouTube video link here")
-timestamp = 0
+
+if "timestamp" not in st.session_state:
+    st.session_state.timestamp = 0
 
 col1, col2 = st.columns([6, 4])
 
@@ -51,7 +53,7 @@ def play_video(link, timestamp):
 
 
 if youtube_link:
-    play_video(youtube_link, timestamp)
+    play_video(youtube_link, st.session_state.timestamp)
 
     video_id = get_video_id(youtube_link)
 
@@ -63,6 +65,7 @@ if youtube_link:
 
     with col2:
         with st.form("**Vector Augmented Search**", clear_on_submit=True):
+            st.write(st.session_state.search_query)
             # Input for search query
             st.session_state.search_query = st.text_input("Enter your search query")
 
@@ -78,13 +81,15 @@ if youtube_link:
 
                 if citations:
                     top_citations = citations[0]
-                    st.write(top_citations["text"])
+                    reference = ' '.join(top_citations["text"].split()[2:])
+                    st.write(f"**Reference:** \n {reference}")
 
                     with st.spinner("Finding reference timestamp..."):
                         timestamp = math.floor(find_timestamp(top_citations["text"], transcript))
+                        st.session_state.timestamp = timestamp
 
-            formatted_timestamp = timestamp if timestamp > 0 else "start"
-            st.form_submit_button(f"Jump to {formatted_timestamp}", on_click=play_video(youtube_link, timestamp))
+            formatted_timestamp = st.session_state.timestamp if st.session_state.timestamp > 0 else "start"
+            st.form_submit_button(f"Jump to {formatted_timestamp}", on_click=play_video(youtube_link, st.session_state.timestamp))
 
         with st.expander("**Condensation**"):
             st.write(transcript)
