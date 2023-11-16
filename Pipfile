@@ -13,6 +13,7 @@ llama-index = "*"
 llama-hub = "*"
 python-dotenv = "*"
 openai = "*"
+spacy = "*"
 
 [dev-packages]
 ipykernel = "*"

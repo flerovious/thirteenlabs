@@ -4,7 +4,8 @@ from llama_index.query_engine import CitationQueryEngine
 from llama_index.response.schema import RESPONSE_TYPE
 import streamlit as st
 from dotenv import load_dotenv
-import openai
+import spacy
+from spacy.cli.download import download
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ def process_youtube_url(youtube_url: str):
         index,
         similarity_top_k=3,
         # here we can control how granular citation sources are, the default is 512
-        citation_chunk_size=512,
+        citation_chunk_size=32,
     )
 
     return query_engine
@@ -45,17 +46,37 @@ def get_answer(response: RESPONSE_TYPE):
 def get_top_citations(response: RESPONSE_TYPE):
     citations = []
     for source_node in response.source_nodes:
-        video_id = source_node.node.get_metadata_str().split()
-
-        if not video_id:
-            continue
-
-        text = response.source_nodes[0].node.get_text().replace("\n", " ")
+        text = source_node.node.get_text().replace("\n", " ")
 
         citations.append(
             {
-                "video_id": video_id,
                 "text": text,
             }
         )
+
     return citations
+
+
+@st.cache_resource
+def download_spacy():
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+    return nlp
+
+
+def find_timestamp(top_citations_text, text_segments):
+    best_similarity = 0
+    best_match_timestamp = None
+    nlp = download_spacy()
+
+    for citation_text in top_citations_text:
+        for segment in text_segments:
+            citation_doc = nlp(citation_text)
+            segment_doc = nlp(segment["text"])
+            similarity = citation_doc.similarity(segment_doc)
+
+            if similarity > best_similarity:
+                best_similarity = similarity
+                best_match_timestamp = segment["start"]
+
+    return best_match_timestamp
