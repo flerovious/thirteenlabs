@@ -1,27 +1,30 @@
 import streamlit as st
+from transcribe import get_video_id, get_transcript
+from logo import render_logo
 
-st.title("YouTube Video Semantic Search")
+# Render the logo
+render_logo()
 
 # Semantic Search Section
-search_query = st.text_input("Enter your search term here...")
-
-with st.sidebar:
-    # Input for YouTube link
-    youtube_link = st.text_input("Enter YouTube Link", placeholder="Paste your link here...")
+youtube_link = st.text_input("Enter your youtube video link here")
 
 if youtube_link:
     # Display the video
     st.video(youtube_link)
 else:
     # Prompt user to enter a YouTube link
-    st.warning("Please enter a YouTube link above to display the video and enable search.")
+    st.warning(
+        "Please enter a YouTube link above to display the video and enable search."
+    )
 
-if search_query:
+if youtube_link:
     # Placeholder for search results
-    search_results = st.empty()  # You will update this with actual results later
+    transcript_results = st.empty()
 
-    # Assuming 'search_function' is your function to search the transcript
-    # results = search_function(search_query, transcript)
+    video_id = get_video_id(youtube_link)
 
-    # Displaying a placeholder message until search is implemented
-    search_results.markdown("Search results will appear here...")
+    # Get the transcript
+    transcript = get_transcript(video_id)
+
+    # Displaying a the transcript json
+    transcript_results.markdown(transcript)
