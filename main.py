@@ -85,7 +85,7 @@ if youtube_link:
                     st.write(f"**Reference:** \n {reference}")
 
                     with st.spinner("Finding reference timestamp..."):
-                        timestamp = math.floor(find_timestamp(top_citations["text"], transcript))
+                        timestamp = math.floor(find_timestamp(answer, transcript))
                         st.session_state.timestamp = timestamp
 
             formatted_timestamp = st.session_state.timestamp if st.session_state.timestamp > 0 else "start"
