@@ -62,7 +62,7 @@ if youtube_link:
     query_engine = process_youtube_url(youtube_link)
 
     with col2:
-        with st.form("**Vector Augmented Search**"):
+        with st.form("**Vector Augmented Search**", clear_on_submit=True):
             # Input for search query
             st.session_state.search_query = st.text_input("Enter your search query")
 
